@@ -4,9 +4,10 @@ module deceit::deceit{
     //==============================================================================================
     // Dependencies
     //==============================================================================================
-    use std::string::{Self, String};
+    use std::string::{String};
     use sui::table::{Self, Table};
-    use sui::object;
+    use deceit::gold::{Self, GOLD};
+    use sui::coin::{TreasuryCap};
 
     //==============================================================================================
     // Constants
@@ -42,11 +43,11 @@ module deceit::deceit{
     // a new one will be generated for each new game
     // shared object that can be modified by each player involved during their turn
     public struct Game has store{
-        responses: String, //blob_id of all responses 
+        name: String,
+        responses: Option<String>, //blob_id of all responses 
         players: vector<address>, //address of user Player obj_add, NOT user wallet address
-        winners: vector<address>, //address of user wallet address 
+        winners: vector<address>, //address of user Player obj_add
     }
-
 
     //==============================================================================================
     // Event Structs 
@@ -103,21 +104,44 @@ module deceit::deceit{
         player.prompt = new_prompt;
     }
 
-    public entry fun game_concluded(
-        responses: String, //blob-id
-        winners: vector<address>,
+    entry fun start_game(
+        name: String,
         players: vector<address>,
         _: &AdminCap,
         state: &mut State,
         _ctx: &mut TxContext
     ){
         let game = Game{
-            responses,
+            name,
+            responses: option::none(),
             players,
-            winners
+            winners: vector::empty(),
         };
         let count = table::length(&state.game_records);
         table::add(&mut state.game_records, count, game);
+    }
+
+    entry fun game_concluded(
+        game_id: u64,
+        responses: String, //blob-id
+        reward: u64, //GOLD to reward per winner
+        winners: vector<address>,
+        _: &AdminCap,
+        treasury_cap: &mut TreasuryCap<GOLD>,
+        state: &mut State,
+        ctx: &mut TxContext
+    ){
+        let game = table::borrow_mut(&mut state.game_records, game_id);
+        game.responses = option::some(responses);
+        game.winners = winners;
+        let mut i = 0;
+        while(i <  vector::length(&winners)){
+            let winner = *vector::borrow(&winners, i);
+            let score = table::borrow_mut(&mut state.score, winner);
+            *score = *score + 1;
+            gold::mint(treasury_cap, reward, winner, ctx);
+            i = i + 1;
+        };  
     }
 
     //==============================================================================================
