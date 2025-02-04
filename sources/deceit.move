@@ -8,6 +8,7 @@ module deceit::deceit{
     use sui::table::{Self, Table};
     use deceit::gold::{Self, GOLD};
     use sui::coin::{TreasuryCap};
+    use sui::event;
 
     //==============================================================================================
     // Constants
@@ -52,6 +53,20 @@ module deceit::deceit{
     //==============================================================================================
     // Event Structs 
     //==============================================================================================
+
+    public struct GameCreated has copy, drop{
+        name: String,
+        game_id: u64, // game_id_count
+        players: vector<address>, //address of user Player obj_add, NOT user wallet address
+    }
+
+    public struct GameConcluded has copy, drop{
+        name: String,
+        game_id: u64, // game_id_count
+        winners: vector<address>,
+    }
+
+
 
     //==============================================================================================
     // Init
@@ -119,6 +134,11 @@ module deceit::deceit{
         };
         let count = table::length(&state.game_records);
         table::add(&mut state.game_records, count, game);
+        event::emit(GameCreated{
+            name,
+            game_id: count,
+            players
+        });
     }
 
     entry fun game_concluded(
@@ -142,6 +162,11 @@ module deceit::deceit{
             gold::mint(treasury_cap, reward, winner, ctx);
             i = i + 1;
         };  
+        event::emit(GameConcluded {
+            name: game.name,
+            game_id,
+            winners,
+        })
     }
 
     //==============================================================================================
