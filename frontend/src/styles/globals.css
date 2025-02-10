@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #fff;
+    --foreground: 222.2 84% 4.9%;
+  }
+
+  .dark {
+    --background: #070707;
+    --foreground: #333;
+  }
+
+  /* The font weight at here is following the figma design */
+  * {
+    @apply m-0 box-border p-0;
+  }
+
+  body {
+    @apply bg-white text-foreground;
+  }
+}
+
+@layer utilities {
+  .button-animate-110 {
+    @apply duration-300 ease-in-out hover:scale-110 active:scale-90;
+  }
+
+  .button-animate-105 {
+    @apply duration-300 ease-in-out hover:scale-105 active:scale-95;
+  }
+
+  .Toastify__toast {
+    background-color: #141b1d;
+  }
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
