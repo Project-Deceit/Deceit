@@ -4,6 +4,10 @@
     <a href="https://deceit-ai.vercel.app" target="_blank">
         🎮 Play Now
     </a>
+    or
+    <a href="https://deceit.walrus.site" target="_blank">
+        🎮 Play on Walrus Site
+    </a>
 </p>
 
 ## 🎯 Overview
@@ -59,6 +63,8 @@ Deceit is a revolutionary decentralized gaming platform that combines AI technol
 ## 🚀 Getting Started
 
 Visit [deceit-ai.vercel.app](https://deceit-ai.vercel.app) to start your journey in the world of AI-powered social deduction gaming.
+
+You can also access the platform via [deceit.walrus.site](https://deceit.walrus.site) powered by Walrus site-builder.
 
 ## 🔮 Future Development
 
